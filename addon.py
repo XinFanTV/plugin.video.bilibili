@@ -30,33 +30,73 @@ def index():
         } for name in bili.CAT_URLS ]
 
 
+    #dir_list.append({
+    #    'label': '热门排行',
+    #    'path': plugin.url_for('hot_index', type='all')
+    #})
+    #
+    #
     dir_list.append({
-        'label': '热门排行',
-        'path': plugin.url_for('hot_index')
-    }) 
+        'label': '热门排行(日)',
+        'path': plugin.url_for('hot_index', type='day')
+    })
+    dir_list.append({
+        'label': '热门排行(3日)',
+        'path': plugin.url_for('hot_index', type='3day')
+    })
+    dir_list.append({
+        'label': '热门排行(周)',
+        'path': plugin.url_for('hot_index', type='week')
+    })
+    dir_list.append({
+        'label': '热门排行(月)',
+        'path': plugin.url_for('hot_index', type='month')
+    })
+    return dir_list
+
+
+
+
+# HOT列表页
+@plugin.route('/hot/<type>')
+def hot_index(type):
+    if type == "all":
+        dir_list = [
+            {
+                'label': name['name'],
+                'path': plugin.url_for('hot_list', type=type, category=name['eng_name'])
+            } for name in bili.CAT_URLS ]
+
+    else: 
+        dir_list = [
+            {
+                'label': name['name'],
+                'path': plugin.url_for('hot_list', type=type, category=name['id'])
+            } for name in bili.HOT_CATS ]
+
     return dir_list
 
 # HOT列表页
-@plugin.route('/hot/index')
-def hot_index():
-    dir_list = [
-        {
-            'label': name['name'],
-            'path': plugin.url_for('hot_list', category=name['eng_name'])
-        } for name in bili.CAT_URLS ]
+@plugin.route('/hot/<type>/<category>')
+def hot_list(type,category):
+    if type == "all":
+        dir_list=[]
+        for item in bili.get_hot_items(category):
+            dir_list.append({
+                'label': item['title'],
+                'thumbnail':item['thumbnail'],
+                'path': plugin.url_for('list_videos', category=category, video=item['published'])
+            }) 
+    else:
 
-    return dir_list
+        dir_list=[]
+        for item in bili.get_hotjson_items(type,category):
+            dir_list.append({
+                'label': item['title'],
+                'thumbnail':item['thumbnail'],
+                'path': plugin.url_for('list_videos', category=category, video=item['published'])
+            }) 
 
-# HOT列表页
-@plugin.route('/hot/index/<category>')
-def hot_list(category):
-    dir_list=[]
-    for item in bili.get_hot_items(category):
-        dir_list.append({
-            'label': item['title'],
-            'thumbnail':item['thumbnail'],
-            'path': plugin.url_for('list_videos', category=category, video=item['published'])
-        }) 
 
     return dir_list
 

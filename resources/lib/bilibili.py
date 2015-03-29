@@ -11,7 +11,7 @@ import tempfile
 import utils
 import cPickle as pickle
 from niconvert import create_website
-
+import json
 
 import urllib2, urllib, string, sys,  gzip, StringIO
 import math, os.path, httplib
@@ -31,6 +31,7 @@ class Bili():
         self.INDEX_URLS = INDEX_URLS                                # B站索引地址
         self.ROOT_PATH = ROOT_PATH                                  # 根菜单
         self.CAT_URLS = CAT_URLS                                  
+        self.HOT_CATS = HOT_CATS                                  
         self.LIST_TYPE = LIST_TYPE                                  # 列表类型
         self.INTERFACE_URL = INTERFACE_URL                          # 视频地址请求页面地址
         self.COMMENT_URL = COMMENT_URL                              # 评论页面地址
@@ -217,6 +218,58 @@ class Bili():
             'description': x,
             'published': x
         } for x in sorted(parse_result[type_id].keys(), reverse=bool(type_id))]
+
+
+
+    def get_hotjson_items(self,type, category):
+        self._print_info('Getting HOT CAT JSON Items')
+        self._print_info(category)
+        json_url = 'http://www.bilibili.com/index/rank/all-1-3.json'
+        self._print_info(json_url) 
+        self._print_info('HOT CAT Items fetched succeeded!')
+ 
+        html= utils.get_page_content(json_url)
+
+
+        data=json.loads(html)
+        data=(data['rank']['list'])
+
+
+        temp=[]
+
+    
+
+        for i in range(0,len(data)):
+            #pprint(data[i])
+            aid= 'av'+str(data[i]['aid'])
+            title=(data[i]['title'])
+            author=(data[i]['author'])
+            description=(data[i]['description'])
+            mid=(data[i]['mid'])
+            pic=(data[i]['pic'])
+            link= 'http://www.bilibili.com/video/'+str(aid)
+
+            temp.append({
+            'title': title,
+            'link': link,
+            'category':category,
+            'description':description,
+            'thumbnail':pic,
+            'published': aid })
+
+
+            #temp.append({
+            #    'title': title,
+            #    'link': 'http://www.bilibili.com/video/av'+aid,
+            #    'category':category,
+            #    'description':description,
+            #    'thumbnail':pic,
+            #    'published': 'av'+aid })
+
+
+
+        return temp
+
 
 
     def get_hot_items(self, category):
