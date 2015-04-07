@@ -31,6 +31,7 @@ class Bili():
         self.INDEX_URLS = INDEX_URLS                                # B站索引地址
         self.ROOT_PATH = ROOT_PATH                                  # 根菜单
         self.CAT_URLS = CAT_URLS                                  
+        self.ANIME_INDEX = ANIME_INDEX                                  
         self.HOT_CATS = HOT_CATS                                  
         self.LIST_TYPE = LIST_TYPE                                  # 列表类型
         self.INTERFACE_URL = INTERFACE_URL                          # 视频地址请求页面地址
@@ -224,7 +225,7 @@ class Bili():
     def get_hotjson_items(self,type, category):
         self._print_info('Getting HOT CAT JSON Items')
         self._print_info(category)
-        json_url = 'http://www.bilibili.com/index/rank/all-1-3.json'
+        json_url = 'http://www.bilibili.com/index/rank/all-'+type+'-'+category+'.json'
         self._print_info(json_url) 
         self._print_info('HOT CAT Items fetched succeeded!')
  
@@ -303,6 +304,292 @@ class Bili():
 
 
         return temp
+
+    def get_anime_index(self):
+        self._print_info('Getting ANIME INDEX')
+        anime_url = self.ANIME_INDEX
+        self._print_info(anime_url)
+        #parse_result = feedparser.parse(cat_url)
+        self._print_info('ANIME INDEX fetched succeeded!')
+ 
+        html= utils.get_page_content(anime_url)
+        #attrs = re.compile('<div class="l-item"><a href="/video/(.+?)/" target="_blank" class="preview"><img src="(.+?)"></a><a href="/video/(.+?)/" target="_blank" class="title">(.+?)</a>').findall(html)
+        temp=[]
+        #temp= [{
+        #    'title': i[3],
+        #    'description': i[3],
+        #    'link':'',
+        #    'category':category,
+        #    'thumbnail':i[1],
+        #    'published': i[0]} for i in attrs]
+
+        #for t in temp:
+        #    for tt in t:
+        #        self._print_info(t[tt])
+
+        html = html.replace('\r', '')
+        html = html.replace('\n', '')
+
+        anime = re.compile('<ul class="v_ul">(.+?)</ul>').findall(html)
+
+
+
+        if len(anime):
+            anime = anime[0].replace('\r', '')
+            anime = anime.replace('\n', '')
+            anime = re.compile('<li>(.+?)</li>').findall(anime)
+
+
+            for _anime in anime:
+                #print _anime
+                #_anime=_anime.replace(' ', '')
+                #print _anime
+                cover = re.compile('<div class="cover">(.+?)</div>').findall(_anime)
+                info_wrp = re.compile('<div class="info_wrp">(.+?)</div>').findall(_anime)
+                info_series = re.compile('<p class="num">(.+?)</p>').findall(_anime)
+                
+                image=""
+                link=""
+                title=""
+                
+                if len(cover):
+                    _cover = re.compile('<a href="(.+?)" target="_blank"><img src="(.+?)" /></a>').findall(cover[0])
+                    if len(_cover):
+                        image = _cover[0][1]
+                        link = _cover[0][0]
+
+                if len(info_wrp):
+                    _info_wrp = re.compile('<a title="(.+?)" href="(.+?)" target="_blank">(.+?)</a>').findall(info_wrp[0])
+                    if len(_info_wrp):
+                        title=_info_wrp[0][0]
+
+                if len(info_series):
+                    info_series=info_series[0].replace('<b>', '')
+                    info_series=info_series.replace('</b>', '')
+                    title=title+"  "+info_series
+
+                temp.append({
+                    'title': title,
+                    'link': link,
+                    'type': 'sp',
+                    'thumbnail':image,
+                    'published': link})
+
+        
+
+        pager = re.compile('<div class="pagelistbox">(.+?)</div>').findall(html)
+
+        if len(pager):
+            links = re.compile('href="(.+?)">(.+?)</a>').findall(pager[0])
+
+
+            for p in links:
+                if p[1] == '下页' or p[1] == '末页' or p[1] == '首页 ' or p[1] == '上页 ':
+                    temp.append({
+                        'title': p[1],
+                        'link': p[0],
+                        'type': 'list',
+                        'thumbnail':p[1],
+                        'published': p[0]})
+                else:
+                    temp.append({
+                        'title': '第'+p[1]+'页',
+                        'link': p[0],
+                        'type': 'list',
+                        'thumbnail':p[1],
+                        'published': p[0]})
+
+        return temp
+
+    def get_anime_list(self,list):
+        self._print_info('Getting ANIME LIST')
+        anime_url = self.BASE_URL + list
+        self._print_info(anime_url)
+        #parse_result = feedparser.parse(cat_url)
+        self._print_info('ANIME LIST fetched succeeded!')
+ 
+        html= utils.get_page_content(anime_url)
+        #attrs = re.compile('<div class="l-item"><a href="/video/(.+?)/" target="_blank" class="preview"><img src="(.+?)"></a><a href="/video/(.+?)/" target="_blank" class="title">(.+?)</a>').findall(html)
+        temp=[]
+        #temp= [{
+        #    'title': i[3],
+        #    'description': i[3],
+        #    'link':'',
+        #    'category':category,
+        #    'thumbnail':i[1],
+        #    'published': i[0]} for i in attrs]
+
+        #for t in temp:
+        #    for tt in t:
+        #        self._print_info(t[tt])
+
+        html = html.replace('\r', '')
+        html = html.replace('\n', '')
+
+        anime = re.compile('<ul class="v_ul">(.+?)</ul>').findall(html)
+
+
+
+        if len(anime):
+            anime = anime[0].replace('\r', '')
+            anime = anime.replace('\n', '')
+            anime = re.compile('<li>(.+?)</li>').findall(anime)
+
+
+            for _anime in anime:
+                #print _anime
+                #_anime=_anime.replace(' ', '')
+                #print _anime
+                cover = re.compile('<div class="cover">(.+?)</div>').findall(_anime)
+                info_wrp = re.compile('<div class="info_wrp">(.+?)</div>').findall(_anime)
+                info_series = re.compile('<p class="num">(.+?)</p>').findall(_anime)
+                
+                image=""
+                link=""
+                title=""
+                
+                if len(cover):
+                    _cover = re.compile('<a href="(.+?)" target="_blank"><img src="(.+?)" /></a>').findall(cover[0])
+                    if len(_cover):
+                        image = _cover[0][1]
+                        link = _cover[0][0]
+
+                if len(info_wrp):
+                    _info_wrp = re.compile('<a title="(.+?)" href="(.+?)" target="_blank">(.+?)</a>').findall(info_wrp[0])
+                    if len(_info_wrp):
+                        title=_info_wrp[0][0]
+
+                if len(info_series):
+                    info_series=info_series[0].replace('<b>', '')
+                    info_series=info_series.replace('</b>', '')
+                    title=title+"  "+info_series
+
+                temp.append({
+                    'title': title,
+                    'link': link,
+                    'type': 'sp',
+                    'thumbnail':image,
+                    'published': link})
+
+        
+
+        pager = re.compile('<div class="pagelistbox">(.+?)</div>').findall(html)
+
+        if len(pager):
+            links = re.compile('href="(.+?)">(.+?)</a>').findall(pager[0])
+
+
+            for p in links:
+                if p[1] == '下页' or p[1] == '末页' or p[1] == '首页 ' or p[1] == '上页 ':
+                    temp.append({
+                        'title': p[1],
+                        'link': p[0],
+                        'type': 'list',
+                        'thumbnail':p[1],
+                        'published': p[0]})
+                else:
+                    temp.append({
+                        'title': '第'+p[1]+'页',
+                        'link': p[0],
+                        'type': 'list',
+                        'thumbnail':p[1],
+                        'published': p[0]})
+
+        return temp
+
+
+   
+
+
+    def get_anime_series_links(self,anime):
+        self._print_info('Getting ANIME Item[links]')
+        #parse_result = feedparser.parse(cat_url)
+        self._print_info(anime)
+        self._print_info('ANIME Item[links] fetched succeeded!')
+ 
+        #attrs = re.compile('<div class="l-item"><a href="/video/(.+?)/" target="_blank" class="preview"><img src="(.+?)"></a><a href="/video/(.+?)/" target="_blank" class="title">(.+?)</a>').findall(html)
+        temp=[]
+    
+
+        temp=self.get_next_page(temp,anime,1)
+
+
+
+
+        return temp
+    def get_anime_series(self,anime):
+        self._print_info('Getting ANIME Item')
+        anime_url = self.BASE_URL+anime
+        self._print_info(anime_url)
+        #parse_result = feedparser.parse(cat_url)
+        self._print_info('ANIME Item fetched succeeded!')
+ 
+        html= utils.get_page_content(anime_url)
+        #attrs = re.compile('<div class="l-item"><a href="/video/(.+?)/" target="_blank" class="preview"><img src="(.+?)"></a><a href="/video/(.+?)/" target="_blank" class="title">(.+?)</a>').findall(html)
+        temp=[]
+    
+
+        html = html.replace('\r', '')
+        html = html.replace('\n', '')
+
+        spid = re.compile('var spid = "(.+?)";').findall(html)
+        series = re.compile('<option value="(.+?)">(.+?)</option>').findall(html)
+
+        if len(spid):
+            spid=spid[0]
+            self._print_info('spid  '+spid)
+
+        if len(series):
+            for s in series:
+                self._print_info('title'+s[1])
+                self._print_info('series number '+s[0])
+                link=spid+'-'+s[0]
+                #http://www.bilibili.com/sppage/bangumi-13294-1816-1.html
+                temp.append({
+                    'title': s[1],
+                    'link': link,
+                    'spid': spid,
+                    'seriesid': s[1],
+                    'type': 'series',
+                    'thumbnail':s[0],
+                    'published': s[0]})
+
+        else:
+            temp=self.get_next_page(temp,spid,1)
+
+
+
+
+        return temp
+
+
+
+    def get_next_page(self,list,bangumi,page):
+        p_url='http://www.bilibili.com/sppage/bangumi-'+str(bangumi)+'-'+str(page)+'.html'
+        html= utils.get_page_content(p_url)
+
+        html = html.replace('\r', '')
+        html = html.replace('\n', '')
+        checknext = re.compile('<div class="no_more">(.+?)</div>').findall(html)
+        if len(checknext):
+            if checknext[0]=="没有更多信息":
+                return list
+
+        else:
+            series = re.compile('<a class="t" href="/video/(.+?)" target="_blank">(.+?)</a>').findall(html)
+
+            if len(series):
+                for s in series:
+                    list.append({
+                        'title': s[1].strip(),
+                        'link': s[0].strip(),
+                        'type': 'bangumi',
+                        'page': page,
+                        'thumbnail':s[0].strip(),
+                        'published': s[0].strip()})
+
+            return self.get_next_page(list,bangumi,page+1)
+
 
     def get_cat_items(self, category):
         self._print_info('Getting CAT Items')
@@ -425,7 +712,61 @@ class Bili():
         id=video
 
 
-        url=urllib.urlencode({'kw':'http://www.bilibili.com/video/'+id})
+        url=urllib.urlencode({'kw':'http://www.bilibili.com/video/'+video})
+       
+
+        p_url='http://www.flvcd.com/parse.php?format=&'+url
+        html2 = utils.get_page_content(p_url)
+        html2=html2.decode('gbk').encode('utf-8')
+        
+
+        attrs2 = re.compile('<input type="hidden" name="(.+?)" value="(.*?)"').findall(html2)
+
+
+
+
+        filename=""
+        inf=""
+        for i in (attrs2):
+            if i[0]=="filename":
+                filename=i[1]
+            if i[0]=="inf":
+                inf=i[1]
+
+                
+
+        video_urls.append({
+            'title': '直接播放',
+            'link': inf,
+            'category':category,
+            'description': description,
+            'thumbnail':thumbnail,
+            'published': id})
+
+        return video_urls
+
+
+    def get_video_parts2(self,category,video,part):
+        # 多个部分用这个函数处理 index 开始
+        # 
+        self._print_info('Getting Video Parts')
+        self._print_info(video)
+        #parse_result = feedparser.parse(cat_url)
+        self._print_info('Parts fetched succeeded!')
+  
+
+
+
+        video_urls=[]
+
+
+        title=part
+        description=part
+        thumbnail=video
+        id=video
+
+
+        url=urllib.urlencode({'kw':'http://www.bilibili.com'+part})
        
 
         p_url='http://www.flvcd.com/parse.php?format=&'+url
