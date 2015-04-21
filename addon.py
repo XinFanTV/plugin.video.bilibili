@@ -8,6 +8,11 @@ from resources.lib.subtitle import subtitle_offset
 plugin = Plugin()
 bili = Bili()
 
+skin_used = xbmc.getSkinDir()
+if skin_used == 'skin.confluence':
+    xbmc.executebuiltin('Container.SetViewMode(500)') # "Thumbnail" view
+
+
 def get_tmp_dir():
     if len(TEMP_DIR) != 0:
         return TEMP_DIR

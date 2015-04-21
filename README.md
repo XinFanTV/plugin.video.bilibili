@@ -1,10 +1,5 @@
-# xbmc-plugin.video.bilibili
-Bilibili plugin for xbmc 
+# XBMC/KODI Bilibili 插件
 
-Donation or bugs please contract 63208705@qq.com
+动画，电影，音乐，电视剧
 
-XinFan.TV would be released soon. You can also star this project to support us.
-
-
-Changelog:
-2015-04-08  Update for Animation Index
+www.xinfan.tv

@@ -576,6 +576,12 @@ class Bili():
                 return list
 
         else:
+            thumbnail=""
+            cover = re.compile('<div class="cover"><img src="(.+?)"></div>').findall(html)
+            if len(cover):
+                thumbnail=cover[0]
+
+
             series = re.compile('<a class="t" href="/video/(.+?)" target="_blank">(.+?)</a>').findall(html)
 
             if len(series):
@@ -585,7 +591,7 @@ class Bili():
                         'link': s[0].strip(),
                         'type': 'bangumi',
                         'page': page,
-                        'thumbnail':s[0].strip(),
+                        'thumbnail':thumbnail,
                         'published': s[0].strip()})
 
             return self.get_next_page(list,bangumi,page+1)

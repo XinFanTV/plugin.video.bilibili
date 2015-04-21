@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.bilibili" name="哔哩哔哩(bilibili)" version="0.2.4" provider-name="Syndim">
+<addon id="plugin.video.bilibili" name="哔哩哔哩(bilibili)" version="1.3.0" provider-name="www.xinfan.tv">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.xbmcswift2" version="2.4.0"/>
@@ -10,7 +10,7 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <language></language>
-        <summary>XBMC Bilibili Plugin</summary>
-        <description>XBMC BiliBili Plugin</description>
+        <summary>Kodi Bilibili Plugin Generated From www.xinfan.tv</summary>
+        <description>Kodi BiliBili Plugin Generated From www.xinfan.tv</description>
     </extension>
 </addon>
