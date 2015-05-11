@@ -606,14 +606,17 @@ class Bili():
         self._print_info('CAT Items fetched succeeded!')
  
         html= utils.get_page_content(cat_url)
-        attrs = re.compile('<div class="l-item"><a href="/video/(.+?)/" target="_blank" class="preview"><img src="(.+?)"></a><a href="/video/(.+?)/" target="_blank" class="title">(.+?)</a>').findall(html)
+        attrs = re.compile('<div class="l-item"><a href="/video/(.+?)/" target="_blank" class="preview" title="(.+?)"><img src="(.+?)" alt="(.+?)"></a><a href="/video/(.+?)/" target="_blank" class="title" title="(.+?)">(.+?)</a>').findall(html)
         
+
+        #<a href="/video/av2315815/" target="_blank" class="preview" title="【犯罪】【1990】极道之妻 最后的战争 主演: 岩下志麻 导演: 山下耕作"><img src="http://i2.hdslb.com/320_180/video/0f/0f3662fcc909ad31da2963108ea4d9f6.jpg" alt="【犯罪】【1990】极道之妻 最后的战争 主演: 岩下志麻 导演: 山下耕作"></a>
+
         temp= [{
-            'title': i[3],
-            'description': i[3],
+            'title': i[1],
+            'description': i[1],
             'link':'',
             'category':category,
-            'thumbnail':i[1],
+            'thumbnail':i[2],
             'published': i[0]} for i in attrs]
 
         #for t in temp:
