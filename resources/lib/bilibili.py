@@ -582,7 +582,7 @@ class Bili():
                 thumbnail=cover[0]
 
 
-            series = re.compile('<a class="t" href="/video/(.+?)" target="_blank">(.+?)</a>').findall(html)
+            series = re.compile('<a class="t" href="/video/(.+?)" target="_blank" title="(.+?)">(.+?)</a>').findall(html)
 
             if len(series):
                 for s in series:
