@@ -725,88 +725,79 @@ class Bili():
        
 
         p_url='http://www.flvcd.com/parse.php?format=&'+url
-        html2 = utils.get_page_content(p_url)
-        html2=html2.decode('gbk').encode('utf-8')
-        
+        p_url='http://api.xinfan.tv:9999/vid/'+video
+        videourl = utils.get_page_content(p_url)   
 
-        attrs2 = re.compile('<input type="hidden" name="(.+?)" value="(.*?)"').findall(html2)
+        self._print_info(videourl)
+        decodejson={}
+        if videourl:
+            decodejson = json.loads(videourl)
 
 
-
-
-        filename=""
-        inf=""
-        for i in (attrs2):
-            if i[0]=="filename":
-                filename=i[1]
-            if i[0]=="inf":
-                inf=i[1]
-
-                
-
-        video_urls.append({
-            'title': '直接播放',
-            'link': inf,
-            'category':category,
-            'description': description,
-            'thumbnail':thumbnail,
-            'published': id})
+        self._print_info('af')
+        self._print_info(p_url)
+        self._print_info(videourl)
+         
+        if decodejson['status']:
+            for url in decodejson['urls']:
+                video_urls.append({
+                    'title': '直接播放',
+                    'link': url,
+                    'category':category,
+                    'description': description,
+                    'thumbnail':thumbnail,
+                    'published': id})
+        else:
+            video_urls.append({
+                'title': '无法播放',
+                'link': videourl,
+                'category':category,
+                'description': description,
+                'thumbnail':thumbnail,
+                'published': id})
 
         return video_urls
 
 
     def get_video_parts2(self,category,video,part):
+        video_urls=[]
+        title=part
+        description=part
+        thumbnail=video
+        id=video
         # 多个部分用这个函数处理 index 开始
         # 
         self._print_info('Getting Video Parts')
         self._print_info(video)
         #parse_result = feedparser.parse(cat_url)
-        self._print_info('Parts fetched succeeded!')
+        self._print_info('Parts fetched succeeded (v2)!')
   
 
+        p_url='http://api.xinfan.tv:9999/vid/'+video
+        videourl = utils.get_page_content(p_url)  
 
-
-        video_urls=[]
-
-
-        title=part
-        description=part
-        thumbnail=video
-        id=video
-
-
-        url=urllib.urlencode({'kw':'http://www.bilibili.com'+part})
-       
-
-        p_url='http://www.flvcd.com/parse.php?format=&'+url
-        html2 = utils.get_page_content(p_url)
-        html2=html2.decode('gbk').encode('utf-8')
-        
-
-        attrs2 = re.compile('<input type="hidden" name="(.+?)" value="(.*?)"').findall(html2)
-
-
-
-
-        filename=""
-        inf=""
-        for i in (attrs2):
-            if i[0]=="filename":
-                filename=i[1]
-            if i[0]=="inf":
-                inf=i[1]
-
-        link=inf
-
-                
-
-        video_urls.append({
-            'title': '播放',
-            'link': link,
-            'category':category,
-            'description': description,
-            'thumbnail':thumbnail,
-            'published': id})
+        self._print_info(videourl)
+        decodejson={}
+        if videourl:
+            decodejson = json.loads(videourl)
+         
+        if decodejson['status']:
+            for url in decodejson['urls']:
+                video_urls.append({
+                    'title': '直接播放',
+                    'link': url,
+                    'category':category,
+                    'description': description,
+                    'thumbnail':thumbnail,
+                    'published': id})
+        else:
+            video_urls.append({
+                'title': '无法播放',
+                'link': videourl,
+                'category':category,
+                'description': description,
+                'thumbnail':thumbnail,
+                'published': id})
 
         return video_urls
 
