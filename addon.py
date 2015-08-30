@@ -223,16 +223,12 @@ def list_videos(category,video):
         } for item in videos ]
 
     else:
-        dir_list = [ {
-            'label': item['title'],
-            'path': item['link'],
-            'thumbnail':item['thumbnail'],
-            'is_playable':True,
-        } for item in bili.get_video_parts(category,video,'直接播放') ]
 
- 
-
-
+        playlist = xbmc.PlayList( xbmc.PLAYLIST_VIDEO )
+        playlist.clear()
+        for item in bili.get_video_parts(category,video,'直接播放'):
+            playlist.add(item['link'])
+        xbmc.Player().play(playlist)
 
 
     return dir_list
