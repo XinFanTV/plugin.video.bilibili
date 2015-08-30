@@ -681,6 +681,8 @@ class Bili():
 
         for i in attrs:
             parts=True
+            url='http://www.bilibili.com'+i[0]
+            self._print_info(url)
             video_urls.append({
                 'title': i[1],
                 'link': i[0],
@@ -688,14 +690,12 @@ class Bili():
                 'category':category,
                 'description': i[1],
                 'thumbnail':i[1],
-                'published': id})
+                'published': url})
 
 
         if parts:
             self._print_info('has parts')
         else:
-
-
             self._print_info('no  parts')
 
 
@@ -721,11 +721,11 @@ class Bili():
         id=video
 
 
-        url=urllib.urlencode({'kw':'http://www.bilibili.com/video/'+video})
+        #url=urllib.urlencode(video)
        
 
-        p_url='http://www.flvcd.com/parse.php?format=&'+url
-        p_url='http://api.xinfan.tv:9999/vid/'+video
+        #p_url='http://www.flvcd.com/parse.php?format=&'+url
+        p_url='http://api.xinfan.tv:9999/vids/'+video
         videourl = utils.get_page_content(p_url)   
 
         self._print_info(videourl)
@@ -734,7 +734,7 @@ class Bili():
             decodejson = json.loads(videourl)
 
 
-        self._print_info('af')
+        self._print_info('p_url')
         self._print_info(p_url)
         self._print_info(videourl)
          
@@ -773,7 +773,9 @@ class Bili():
         self._print_info('Parts fetched succeeded (v2)!')
   
 
+        #video=urllib.urlencode(video)
         p_url='http://api.xinfan.tv:9999/vid/'+video
+        self._print_info(p_url)
         videourl = utils.get_page_content(p_url)  
 
         self._print_info(videourl)

@@ -223,7 +223,6 @@ def list_videos(category,video):
         } for item in videos ]
 
     else:
-
         dir_list = [ {
             'label': item['title'],
             'path': item['link'],
@@ -245,13 +244,17 @@ def list_videos(category,video):
 @plugin.route('/items/<category>/<video>/<part>')
 def list_parts(category,video,part):
  
-    dir_list = [ {
-        'label': item['title'],
-        'path': item['link'],
-        'thumbnail':item['thumbnail'],
-        'is_playable':True,
-    } for item in bili.get_video_parts2(category,video,part) ]
-    return dir_list
+    playlist = xbmc.PlayList( xbmc.PLAYLIST_VIDEO )
+    playlist.clear()
+
+    
+    for item in bili.get_video_parts2(category,video,part):
+        playlist.add(item['link'])
+
+
+
+    xbmc.Player().play(playlist)
+
 
 
 if __name__ == '__main__':
