@@ -84,11 +84,15 @@ CAT_URLS = [
         'url': 'video/bangumi-two-1.html'
     },
     {
-        'name': u'番剧-连载动画-剧场·OVA',
-        'eng_name': 'newbangumi-ova-1.html',
-        'url': 'video/newbangumi-ova-1.html'
+        'name': u'番剧-连载动画-TAG-OVA，OAD',
+        'eng_name': 'bangumi-two-1.html#!tag=OVA•OAD&page=1',
+        'url': 'video/bangumi-two-1.html#!tag=OVA•OAD&page=1'
     },
-
+    {
+        'name': u'番剧-连载动画-TAG-剧场版',
+        'eng_name': 'bangumi-two-1.html#!tag=剧场版&page=1',
+        'url': 'video/bangumi-two-1.html#!tag=剧场版&page=1'
+    },
     {
         'name': u'番剧-完结动画',
         'eng_name': 'part-twoelement-1.html',

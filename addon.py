@@ -1,5 +1,6 @@
 #coding: utf8
 import tempfile
+import json,cookielib,gzip,time,urllib2,os,os.path
 from xbmcswift2 import Plugin, xbmcgui, xbmc
 from resources.lib.bilibili import Bili
 from resources.lib.config import TEMP_DIR
