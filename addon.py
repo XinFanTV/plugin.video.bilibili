@@ -121,7 +121,7 @@ def anime_tags_view(tagname,cat_id,page):
             dir_list.append({
                 'label': item['label'],
                 'thumbnail':item['thumbnail'],
-                'path': plugin.url_for('anime_tags_view', tagname=tagname, cat_id=cat_id,page=page)
+                'path': plugin.url_for('anime_tags_view', tagname=tagname, cat_id=cat_id,page=item['path'])
             }) 
 
 
