@@ -26,11 +26,11 @@ for i in jsondata:
         print k,j[k]
       print "\t"
       #print _jsondata[j]
-      print "\n\n---"
-      exit()
+      print "\n\n---" 
   else:
     print 'test'
-    print i,_jsondata
+    print i
+    print _jsondata
   #for j in _jsondata:
   #  print j
     #print _jsondata[j]

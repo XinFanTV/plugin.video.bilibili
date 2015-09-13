@@ -103,19 +103,28 @@ def anime_tags_category(cat_id):
         dir_list.append({
             'label': item['label'],
             'thumbnail':item['thumbnail'],
-            'path': plugin.url_for('anime_tags_view', tagname=item['path'], cat_id=cat_id)
+            'path': plugin.url_for('anime_tags_view', tagname=item['path'], cat_id=cat_id,page=1)
         }) 
     return dir_list
 
-@plugin.route('/anime/tags/view/category/<cat_id>/tag/<tagname>')
-def anime_tags_view(tagname,cat_id):
-    dir_list=[]
-    for item in bili.get_tag_videos(cat_id,tagname):
-        dir_list.append({
-            'label': item['label'],
-            'thumbnail':item['thumbnail'],
-            'path': plugin.url_for('list_videos', category=cat_id, video=item['path'])
-        }) 
+@plugin.route('/anime/tags/view/category/<cat_id>/tag/<tagname>/page/<page>')
+def anime_tags_view(tagname,cat_id,page):
+    dir_list=[] 
+    for item in bili.get_tag_videos(cat_id,tagname,page):
+        if item['type']=="video":
+            dir_list.append({
+                'label': item['label'],
+                'thumbnail':item['thumbnail'],
+                'path': plugin.url_for('list_videos', category=cat_id, video=item['path'])
+            }) 
+        if item['type']=="pager":
+            dir_list.append({
+                'label': item['label'],
+                'thumbnail':item['thumbnail'],
+                'path': plugin.url_for('anime_tags_view', tagname=tagname, cat_id=cat_id,page=page)
+            }) 
+
+
     return dir_list
 
 

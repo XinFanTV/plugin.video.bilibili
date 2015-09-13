@@ -244,7 +244,7 @@ class Bili():
         return items
 
 
-    def get_tag_videos(self,cat_id,tagname): 
+    def get_tag_videos(self,cat_id,tagname,page=1): 
         print tagname
         tagname = tagname[1:-1]
         print tagname
@@ -252,7 +252,7 @@ class Bili():
 
 
         print tagname
-        url="http://www.bilibili.com/index/tag/"+cat_id+"/default/1/"+tagname+".json"
+        url="http://www.bilibili.com/index/tag/"+cat_id+"/default/"+page+"/"+tagname+".json"
         print url
         html= utils.get_page_content(url)
         jsondata=json.loads(html)
@@ -268,9 +268,45 @@ class Bili():
                     items.append({
                         'label': j['title'],
                         'thumbnail':j['pic'],
+                        'type':'video',
                         'path': 'av'+j['aid']
                     }) 
                     item=item+1
+            else:
+                if i=='results':
+                    results=_jsondata
+                if i=='num':
+                    num=_jsondata
+                if i=='pages':
+                    self._print_info('page: '+page)
+                    pages=_jsondata
+                    items.append({
+                        'label': '首页',
+                        'thumbnail': '首页',
+                        'type':'pager',
+                        'path':1
+                    }) 
+                    if int(page)<int(pages):
+                        items.append({
+                            'label': '下一页',
+                            'thumbnail': '下一页',
+                            'type':'pager',
+                            'path':(int(page)+1)
+                        }) 
+                    if int(page)>1:
+                        items.append({
+                            'label': '上一页',
+                            'thumbnail': '上一页',
+                            'type':'pager',
+                            'path':(int(page)-1)
+                        }) 
+                    items.append({
+                        'label': '末页',
+                        'thumbnail': '末页',
+                        'type':'pager',
+                        'path':int(pages) 
+                    }) 
+
         return items
 
 
