@@ -19,6 +19,9 @@ import cookielib
 import base64
 from urllib import urlopen
 
+import requests
+
+
 
 UserAgent = 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)'
 
@@ -29,6 +32,7 @@ class Bili():
         self.BASE_URL = BASE_URL                                    # B站根地址
         self.RSS_URLS = RSS_URLS                                    # B站RSS地址
         self.INDEX_URLS = INDEX_URLS                                # B站索引地址
+        self.ROOT_CATEGORY_IDS = ROOT_CATEGORY_IDS                                # TAGS
         self.ROOT_PATH = ROOT_PATH                                  # 根菜单
         self.CAT_URLS = CAT_URLS                                  
         self.ANIME_INDEX = ANIME_INDEX                                  
@@ -219,6 +223,55 @@ class Bili():
             'description': x,
             'published': x
         } for x in sorted(parse_result[type_id].keys(), reverse=bool(type_id))]
+
+
+    def get_tag_category(self,cat_id):
+        url="http://www.bilibili.com/index/catalog_tags.json"
+        html= utils.get_page_content(url)
+        jsondata=json.loads(html)
+        self._print_info('get_tag_category') 
+        items=[] 
+        for i in jsondata:
+            if i==cat_id:
+                _jsondata=jsondata[i]
+                for j in _jsondata:
+
+                    items.append({
+                        'label': j,
+                        'thumbnail':j,
+                        'path':json.dumps(j, ensure_ascii=False).encode('utf8')
+                    }) 
+        return items
+
+
+    def get_tag_videos(self,cat_id,tagname): 
+        print tagname
+        tagname = tagname[1:-1]
+        print tagname
+
+
+
+        print tagname
+        url="http://www.bilibili.com/index/tag/"+cat_id+"/default/1/"+tagname+".json"
+        print url
+        html= utils.get_page_content(url)
+        jsondata=json.loads(html)
+        self._print_info('get_tag_videos') 
+        print jsondata
+        items=[] 
+        item=0
+        for i in jsondata:
+            _jsondata=jsondata[i]
+            if type(_jsondata) is list:
+                for j in _jsondata:
+            
+                    items.append({
+                        'label': j['title'],
+                        'thumbnail':j['pic'],
+                        'path': 'av'+j['aid']
+                    }) 
+                    item=item+1
+        return items
 
 
 
@@ -845,3 +898,7 @@ class Bili():
         page_content = utils.get_page_content(page_full_url)
         self._print_info('Origin page length: ' + str(len(page_content)))
         return self._parse_urls(page_content, need_subtitle)
+
+
+
+

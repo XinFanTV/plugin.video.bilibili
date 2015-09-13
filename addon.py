@@ -35,6 +35,10 @@ def index():
         'label': '新番索引',
         'path': plugin.url_for('anime_index', type='1')
     })
+    dir_list.append({
+        'label': 'TAGS',
+        'path': plugin.url_for('anime_tags_index')
+    })
 
     for name in bili.CAT_URLS:
         dir_list.append({
@@ -67,6 +71,53 @@ def index():
     })
     return dir_list
 
+#  JSON 接口调用首页 
+@plugin.route('/anime/tags/index')
+def anime_tags_index():
+    dir_list=[]
+    for item in bili.ROOT_CATEGORY_IDS:
+        dir_list.append({
+            'label': item,
+            'thumbnail':bili.ROOT_CATEGORY_IDS[item]['thumbnail'],
+            'path': plugin.url_for('anime_tags_rootcategory', cat_id=item)
+        }) 
+    return dir_list
+
+@plugin.route('/anime/tags/rootcategory/<cat_id>')
+def anime_tags_rootcategory(cat_id):
+    print '[BiliAddon]: ' + cat_id
+    print bili.ROOT_CATEGORY_IDS[cat_id]
+    dir_list=[]
+    for item in bili.ROOT_CATEGORY_IDS[cat_id]['children']:
+        dir_list.append({
+            'label': item,
+            'thumbnail':item,
+            'path': plugin.url_for('anime_tags_category', cat_id=bili.ROOT_CATEGORY_IDS[cat_id]['children'][item])
+        }) 
+    return dir_list
+
+@plugin.route('/anime/tags/category/<cat_id>')
+def anime_tags_category(cat_id):
+    dir_list=[]
+    for item in bili.get_tag_category(cat_id):
+        dir_list.append({
+            'label': item['label'],
+            'thumbnail':item['thumbnail'],
+            'path': plugin.url_for('anime_tags_view', tagname=item['path'], cat_id=cat_id)
+        }) 
+    return dir_list
+
+@plugin.route('/anime/tags/view/category/<cat_id>/tag/<tagname>')
+def anime_tags_view(tagname,cat_id):
+    dir_list=[]
+    for item in bili.get_tag_videos(cat_id,tagname):
+        dir_list.append({
+            'label': item['label'],
+            'thumbnail':item['thumbnail'],
+            'path': plugin.url_for('list_videos', category=cat_id, video=item['path'])
+        }) 
+    return dir_list
+
 
 # HOT列表页
 @plugin.route('/anime/index/')
@@ -89,6 +140,7 @@ def anime_index():
             }) 
   
     return dir_list
+
 
 # List页
 @plugin.route('/anime/list/<list>')
